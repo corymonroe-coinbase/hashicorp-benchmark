@@ -136,6 +136,7 @@ func NewRaft(
 ) (*raft.Raft, error) {
 	c := raft.DefaultConfig()
 	c.LocalID = raft.ServerID(id)
+	c.BatchApplyCh = true
 
 	advertise, err := net.ResolveTCPAddr("tcp", address)
 	if err != nil {
