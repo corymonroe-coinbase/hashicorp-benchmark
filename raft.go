@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/corymonroe-coinbase/hashicorp-benchmark/logstore"
 	"github.com/corymonroe-coinbase/hashicorp-benchmark/proto"
 	"github.com/hashicorp/raft"
 	"google.golang.org/grpc"
@@ -33,6 +34,7 @@ func (rpc *EchoRPC) Ping(
 ) (*proto.Request, error) {
 	future := rpc.replicator.Apply(req.Payload, 0)
 	if err := future.Error(); err != nil {
+		log.Fatalf("failed to replicate request: %v", err)
 		return nil, err
 	}
 
@@ -120,9 +122,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-
 	reflection.Register(s)
-
 	proto.RegisterPongServer(s, &EchoRPC{replicator: r})
 	if err := s.Serve(socket); err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -153,10 +153,20 @@ func NewRaft(
 		return nil, err
 	}
 
+	opts := logstore.Options{
+		Path:        "/tmp/raft/" + id + "/log",
+		ArchivePath: "/tmp/raft/" + id + "/archive",
+		SegmentSize: 16 * 1024 * 1024, // 16 MB log segment files
+	}
+	store, err := logstore.NewStore(opts)
+	if err != nil {
+		return nil, err
+	}
+
 	r, err := raft.NewRaft(
 		c,
 		fsm,
-		raft.NewInmemStore(),
+		store,
 		raft.NewInmemStore(),
 		raft.NewInmemSnapshotStore(),
 		transport,
