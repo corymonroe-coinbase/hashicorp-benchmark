@@ -34,7 +34,7 @@ func (rpc *EchoRPC) Ping(
 ) (*proto.Request, error) {
 	future := rpc.replicator.Apply(req.Payload, 0)
 	if err := future.Error(); err != nil {
-		log.Fatalf("failed to replicate request: %v", err)
+		log.Printf("failed to replicate request: %v", err)
 		return nil, err
 	}
 
