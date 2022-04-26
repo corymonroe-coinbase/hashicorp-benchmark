@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option go_package = "github.com/corymonroe-coinbase/hashicorp-benchmark/proto";
+
+message Request {
+   int64 timestamp = 1;
+   bytes payload = 2;
+}
+
+service Pong {
+   rpc Ping(Request) returns (Request);
+}
