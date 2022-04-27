@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package coinbase.mockengineservice;
+
 option go_package = "github.com/corymonroe-coinbase/hashicorp-benchmark/proto";
 
 message Request {
