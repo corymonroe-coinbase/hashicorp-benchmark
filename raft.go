@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/corymonroe-coinbase/hashicorp-benchmark/logstore"
+	// "github.com/corymonroe-coinbase/hashicorp-benchmark/logstore"
 	"github.com/corymonroe-coinbase/hashicorp-benchmark/proto"
 	"github.com/hashicorp/raft"
 	"google.golang.org/grpc"
@@ -154,20 +154,22 @@ func NewRaft(
 		return nil, err
 	}
 
-	opts := logstore.Options{
-		Path:        "/tmp/raft/" + id + "/log",
-		ArchivePath: "/tmp/raft/" + id + "/archive",
-		SegmentSize: 16 * 1024 * 1024, // 16 MB log segment files
-	}
-	store, err := logstore.NewStore(opts)
-	if err != nil {
-		return nil, err
-	}
+	/*
+		opts := logstore.Options{
+			Path:        "/tmp/raft/" + id + "/log",
+			ArchivePath: "/tmp/raft/" + id + "/archive",
+			SegmentSize: 16 * 1024 * 1024, // 16 MB log segment files
+		}
+		store, err := logstore.NewStore(opts)
+		if err != nil {
+			return nil, err
+		}
+	*/
 
 	r, err := raft.NewRaft(
 		c,
 		fsm,
-		store,
+		raft.NewInmemStore(),
 		raft.NewInmemStore(),
 		raft.NewInmemSnapshotStore(),
 		transport,
