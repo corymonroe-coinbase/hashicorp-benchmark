@@ -1,4 +1,9 @@
 # hashicorp-benchmark
+If data already exists under /tmp/raft, need to delete it by issuing:
+
+```
+rm -rf /tmp/raft
+```
 
 Initialize like so:
 
@@ -10,4 +15,4 @@ Initialize like so:
 
 Call it like so:
 
-`grpcurl -plaintext -d '{"timestamp": 13, "payload": "BOOP"}' localhost:50052 Pong.Ping`
+`grpcurl -plaintext -d '{"timestamp": 13, "payload": "BOOP"}' localhost:50052 coinbase.mockengine.Pong/Ping`
